@@ -1,0 +1,19 @@
+<launch>
+	<arg name="rviz" default="true" />
+
+	<rosparam command="load" file="$(find point_livom)/config/fastlivo.yaml" />
+
+	<node pkg="point_livom" type="point-livo" name="livo" output="log">
+		<rosparam file="$(find point_livom)/config/camera_fastlivo.yaml" />
+	</node>
+
+	<node pkg="point_livom" type="point-livm" name="livm" output="screen">
+		<rosparam file="$(find point_livom)/config/camera_fastlivo.yaml" />
+	</node>
+
+	<group if="$(arg rviz)">
+		<node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find point_livom)/rviz_cfg/loam_livox.rviz" />
+	</group>
+	<node pkg="image_transport" type="republish" name="republish" args="compressed in:=/left_camera/image raw out:=/left_camera/image" output="screen" respawn="true"/>
+
+</launch>
